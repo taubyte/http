@@ -3,10 +3,10 @@ package basic
 import (
 	"net/http"
 
-	service "github.com/taubyte/http"
+	"github.com/gorilla/mux"
+	service "github.com/taubyte/go-interfaces/services/http"
 	"github.com/taubyte/http/context"
 	"github.com/taubyte/http/request"
-	"github.com/gorilla/mux"
 )
 
 func (s *Service) GET(def *service.RouteDefinition) {

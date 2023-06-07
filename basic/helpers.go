@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	service "github.com/taubyte/http"
+	"github.com/gorilla/mux"
+	service "github.com/taubyte/go-interfaces/services/http"
 	auth "github.com/taubyte/http/auth"
 	"github.com/taubyte/http/context"
 	"github.com/taubyte/http/request"
-	"github.com/gorilla/mux"
 )
 
 func (s *Service) handleRequest(ctx *request.Request, vars *service.Variables, scope []string, authHandler service.Handler, handler service.Handler, cleanupHandler service.Handler, options ...context.Option) {

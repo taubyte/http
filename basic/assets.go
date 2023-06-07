@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"path"
 
-	service "github.com/taubyte/http"
+	"github.com/spf13/afero"
+	service "github.com/taubyte/go-interfaces/services/http"
 	auth "github.com/taubyte/http/auth"
 	"github.com/taubyte/http/context"
 	"github.com/taubyte/http/request"
-	"github.com/spf13/afero"
 )
 
 func (s *Service) ServeAssets(def *service.AssetsDefinition) {

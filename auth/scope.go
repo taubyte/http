@@ -3,7 +3,7 @@ package auth
 import (
 	"bytes"
 
-	service "github.com/taubyte/http"
+	service "github.com/taubyte/go-interfaces/services/http"
 )
 
 func AnonymousHandler(ctx service.Context) (interface{}, error) {
@@ -33,12 +33,12 @@ func Scope(scope []string, authHandler service.Handler) service.Handler {
 
 func GetAuthorization(c service.Context) *(Authorization) {
 	a, ok := c.Variables()["Authorization"]
-	if ok == false {
+	if !ok {
 		return nil
 	}
 
 	v, ok := a.(Authorization)
-	if ok == false {
+	if !ok {
 		return nil
 	}
 

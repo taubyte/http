@@ -3,7 +3,7 @@ package context
 import (
 	"net/http"
 
-	service "github.com/taubyte/http"
+	service "github.com/taubyte/go-interfaces/services/http"
 )
 
 func (c *Context) RawResponse() bool {

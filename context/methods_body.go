@@ -13,8 +13,8 @@ func (c *Context) ParseBody(obj interface{}) error {
 
 func (c *Context) GetStringMapVariable(key string) (map[string]interface{}, error) {
 	obj, ok := c.variables[key]
-	if ok == false {
-		return nil, fmt.Errorf("Can't find variable %s of type map", key)
+	if !ok {
+		return nil, fmt.Errorf("can't find variable %s of type map", key)
 	}
 
 	return maps.SafeInterfaceToStringKeys(obj), nil

@@ -6,12 +6,12 @@ import (
 	"io"
 	"net/http"
 
-	service "github.com/taubyte/http"
 	"github.com/gorilla/mux"
+	service "github.com/taubyte/go-interfaces/services/http"
 )
 
 func (c *Context) returnData(code int, interfaceData interface{}) error {
-	if c.rawResponse == true {
+	if c.rawResponse {
 		var err error
 
 		switch data := interfaceData.(type) {
@@ -105,10 +105,10 @@ func (ctx *Context) extractVariables(required []string, optional []string) (map[
 
 	xVars := make(map[string]interface{})
 	add := func(k string) bool {
-		if q := request.URL.Query(); q != nil && q.Has(k) == true {
+		if q := request.URL.Query(); q != nil && q.Has(k) {
 			xVars[k] = q.Get(k)
 			return true
-		} else if v, ok := vars[k]; ok == true {
+		} else if v, ok := vars[k]; ok {
 			xVars[k] = v
 			return true
 		} else if v := request.Header.Get(k); v != "" {
@@ -127,8 +127,8 @@ func (ctx *Context) extractVariables(required []string, optional []string) (map[
 	}
 
 	for _, k := range required {
-		if add(k) == false {
-			return nil, fmt.Errorf("Processing `%s`, key `%s` not found!", request.URL, k)
+		if !add(k) {
+			return nil, fmt.Errorf("processing `%s`, key `%s` not found", request.URL, k)
 		}
 	}
 

@@ -3,7 +3,7 @@ package context
 import (
 	"net/http"
 
-	service "github.com/taubyte/http"
+	service "github.com/taubyte/go-interfaces/services/http"
 	"github.com/taubyte/http/request"
 )
 
@@ -29,7 +29,7 @@ func New(ctx *request.Request, vars *service.Variables, options ...Option) (serv
 		return nil, err
 	}
 
-	if c.rawResponse == false {
+	if !c.rawResponse {
 		c.ctx.ResponseWriter.Header().Set("Content-Type", "application/json")
 	}
 
