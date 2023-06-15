@@ -11,41 +11,36 @@ import (
 	"github.com/taubyte/http/request"
 )
 
-func (s *Service) handleRequest(ctx *request.Request, vars *service.Variables, scope []string, authHandler service.Handler, handler service.Handler, cleanupHandler service.Handler, options ...context.Option) {
-	_ctx, err := context.New(ctx, vars, options...)
+func (s *Service) handleRequest(req *request.Request, vars *service.Variables, scope []string, authHandler service.Handler, handler service.Handler, cleanupHandler service.Handler, options ...context.Option) {
+	ctx, err := context.New(req, vars, options...)
 	if err != nil {
-		// New Context will return error to Client
 		logger.Error(err)
 		return
 	}
 
-	err = _ctx.HandleAuth(auth.Scope(scope, authHandler))
-	if err != nil {
-		// enforceScope will return error to Client
+	if err = ctx.HandleAuth(auth.Scope(scope, authHandler)); err != nil {
 		logger.Error(err)
 		return
 	}
 
 	defer func() {
-		cleanupErr := _ctx.HandleCleanup(cleanupHandler)
-		if err != nil {
-			logger.Errorf("cleanup failed with: %s", cleanupErr)
+		if err := ctx.HandleCleanup(cleanupHandler); err != nil {
+			logger.Errorf("cleanup failed with: %s", err)
 		}
 	}()
 
-	err = _ctx.HandleWith(handler)
-	if err != nil {
-		logger.Error(fmt.Errorf("Calling %s failed with %v", ctx.HttpRequest.URL, err))
+	if err = ctx.HandleWith(handler); err != nil {
+		logger.Error(fmt.Errorf("calling %s failed with %v", req.HttpRequest.URL, err))
 	}
 
-	logger.Debugf("%s | %v", string(ctx.HttpRequest.RequestURI), _ctx.Variables())
+	logger.Debugf("%s | %v", string(req.HttpRequest.RequestURI), ctx.Variables())
 }
 
 func (s *Service) buildRouteFromDef(def *service.RouteDefinition) *mux.Route {
 	route := s.Router.HandleFunc(def.Path, func(w http.ResponseWriter, h *http.Request) {
 		logger.Debugf("[GET] %s", h.RequestURI)
 		options := make([]context.Option, 0)
-		if def.RawResponse == true {
+		if def.RawResponse {
 			options = append(options, context.RawResponse())
 		}
 		s.handleRequest(&request.Request{ResponseWriter: w, HttpRequest: h}, &def.Vars, def.Scope, def.Auth.Validator, def.Handler, def.Auth.GC, options...)

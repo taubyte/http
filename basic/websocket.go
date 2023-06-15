@@ -14,13 +14,12 @@ func (s *Service) WebSocket(def *iface.WebSocketDefinition) {
 	route := s.Router.HandleFunc(def.Path, func(w http.ResponseWriter, r *http.Request) {
 		logger.Debugf("[WS] %s", r.RequestURI)
 
-		_ctx, err := context.New(&request.Request{ResponseWriter: w, HttpRequest: r}, &def.Vars)
+		ctx, err := context.New(&request.Request{ResponseWriter: w, HttpRequest: r}, &def.Vars)
 		if err != nil {
-			// New Context will return error to Client
 			logger.Error(err)
 			return
 		}
-		err = _ctx.HandleAuth(auth.Scope(def.Scope, def.Auth.Validator))
+		err = ctx.HandleAuth(auth.Scope(def.Scope, def.Auth.Validator))
 		if err != nil {
 			// enforceScope will return error to Client
 			logger.Error(err)
@@ -28,9 +27,8 @@ func (s *Service) WebSocket(def *iface.WebSocketDefinition) {
 		}
 
 		defer func() {
-			cleanupErr := _ctx.HandleCleanup(def.Auth.GC)
-			if err != nil {
-				logger.Errorf("cleanup failed with: %s", cleanupErr)
+			if err := ctx.HandleCleanup(def.Auth.GC); err != nil {
+				logger.Errorf("cleanup failed with: %s", err)
 			}
 		}()
 
@@ -40,7 +38,7 @@ func (s *Service) WebSocket(def *iface.WebSocketDefinition) {
 			return
 		}
 
-		handler := def.NewHandler(_ctx, conn)
+		handler := def.NewHandler(ctx, conn)
 		if handler == nil {
 			return
 		}

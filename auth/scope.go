@@ -32,15 +32,11 @@ func Scope(scope []string, authHandler service.Handler) service.Handler {
 }
 
 func GetAuthorization(c service.Context) *(Authorization) {
-	a, ok := c.Variables()["Authorization"]
-	if !ok {
-		return nil
+	if a, ok := c.Variables()["Authorization"]; ok {
+		if v, ok := a.(Authorization); ok {
+			return &v
+		}
 	}
 
-	v, ok := a.(Authorization)
-	if !ok {
-		return nil
-	}
-
-	return &(v)
+	return nil
 }

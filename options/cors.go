@@ -18,6 +18,7 @@ func AllowedOrigins(regex bool, origins []string) Option {
 							return true
 						}
 					}
+
 					return false
 				},
 			})
@@ -34,6 +35,7 @@ func AllowedOrigins(regex bool, origins []string) Option {
 							return true
 						}
 					}
+
 					return false
 				},
 			})

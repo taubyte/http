@@ -16,18 +16,18 @@ func (c *Context) returnData(code int, interfaceData interface{}) error {
 
 		switch data := interfaceData.(type) {
 		case []byte:
-			c.ctx.ResponseWriter.WriteHeader(code)
-			_, err = c.ctx.ResponseWriter.Write(data)
+			c.req.ResponseWriter.WriteHeader(code)
+			_, err = c.req.ResponseWriter.Write(data)
 		case string:
-			c.ctx.ResponseWriter.WriteHeader(code)
-			_, err = c.ctx.ResponseWriter.Write([]byte(data))
+			c.req.ResponseWriter.WriteHeader(code)
+			_, err = c.req.ResponseWriter.Write([]byte(data))
 		case service.RawData:
-			c.ctx.ResponseWriter.Header().Set("Content-Type", data.ContentType)
-			c.ctx.ResponseWriter.WriteHeader(code)
-			_, err = c.ctx.ResponseWriter.Write(data.Data)
+			c.req.ResponseWriter.Header().Set("Content-Type", data.ContentType)
+			c.req.ResponseWriter.WriteHeader(code)
+			_, err = c.req.ResponseWriter.Write(data.Data)
 		case service.RawStream:
-			c.ctx.ResponseWriter.Header().Set("Content-Type", data.ContentType)
-			c.ctx.ResponseWriter.WriteHeader(code)
+			c.req.ResponseWriter.Header().Set("Content-Type", data.ContentType)
+			c.req.ResponseWriter.WriteHeader(code)
 			rbuf := make([]byte, 1024)
 			for {
 				var n int
@@ -39,7 +39,7 @@ func (c *Context) returnData(code int, interfaceData interface{}) error {
 					break
 				}
 
-				_, err = c.ctx.ResponseWriter.Write(rbuf[:n])
+				_, err = c.req.ResponseWriter.Write(rbuf[:n])
 				if err != nil {
 					break
 				}
@@ -56,7 +56,7 @@ func (c *Context) returnData(code int, interfaceData interface{}) error {
 			c.returnError(http.StatusInternalServerError, err)
 			return err
 		}
-		_, err = c.ctx.ResponseWriter.Write([]byte(m))
+		_, err = c.req.ResponseWriter.Write([]byte(m))
 		if err != nil {
 			return err
 		}
@@ -74,8 +74,8 @@ func (c *Context) returnError(code int, err error) {
 	)
 
 	// TODO log error here
-	c.ctx.ResponseWriter.Write([]byte(m))
-	c.ctx.ResponseWriter.WriteHeader(code)
+	c.req.ResponseWriter.Write([]byte(m))
+	c.req.ResponseWriter.WriteHeader(code)
 }
 
 func (c *Context) formatBody(m interface{}) (string, error) {

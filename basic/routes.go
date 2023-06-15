@@ -44,9 +44,10 @@ func (s *Service) Raw(def *service.RawRouteDefinition) *mux.Route {
 	route.HandlerFunc(func(w http.ResponseWriter, h *http.Request) {
 		logger.Debugf("[RAW] %s", h.RequestURI)
 		options := make([]context.Option, 0)
-		if def.RawResponse == true {
+		if def.RawResponse {
 			options = append(options, context.RawResponse())
 		}
+
 		s.handleRequest(&request.Request{ResponseWriter: w, HttpRequest: h}, &def.Vars, def.Scope, def.Auth.Validator, def.Handler, def.Auth.GC, options...)
 	})
 

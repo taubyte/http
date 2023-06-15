@@ -7,30 +7,27 @@ import (
 	"github.com/taubyte/http/request"
 )
 
-func New(ctx *request.Request, vars *service.Variables, options ...Option) (service.Context, error) {
-	var err error
-
+func New(req *request.Request, vars *service.Variables, options ...Option) (service.Context, error) {
 	c := &Context{
-		ctx: ctx,
+		req: req,
 	}
 
 	for _, opt := range options {
-		err := opt(c)
-		if err != nil {
+		if err := opt(c); err != nil {
 			return nil, err
 		}
 	}
 
-	c.body = ctx.Body()
+	c.body = req.Body()
 
-	c.variables, err = c.extractVariables(vars.Required, vars.Optional)
-	if err != nil {
+	var err error
+	if c.variables, err = c.extractVariables(vars.Required, vars.Optional); err != nil {
 		c.returnError(http.StatusNotAcceptable, err)
 		return nil, err
 	}
 
 	if !c.rawResponse {
-		c.ctx.ResponseWriter.Header().Set("Content-Type", "application/json")
+		c.req.ResponseWriter.Header().Set("Content-Type", "application/json")
 	}
 
 	return c, nil
