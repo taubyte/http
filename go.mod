@@ -7,6 +7,9 @@ replace (
 	bitbucket.org/taubyte/billing => ../billing
 	bitbucket.org/taubyte/config-compiler => ../config-compiler
 	bitbucket.org/taubyte/dreamland => ../dreamland
+	bitbucket.org/taubyte/dreamland-cli => ../dreamland-cli
+	bitbucket.org/taubyte/dreamland-test => ../dreamland-test
+	bitbucket.org/taubyte/go-dreamland-http => ../go-dreamland-http
 	bitbucket.org/taubyte/go-node-counters => ../go-node-counters
 	bitbucket.org/taubyte/go-node-database => ../go-node-database
 	bitbucket.org/taubyte/go-node-http => ../go-node-http
@@ -20,6 +23,7 @@ replace (
 	bitbucket.org/taubyte/http-auto => ../http-auto
 	bitbucket.org/taubyte/kvdb => ../kvdb
 	bitbucket.org/taubyte/monkey => ../monkey
+	bitbucket.org/taubyte/mycelium => ../mycelium
 	bitbucket.org/taubyte/node => ../node
 	bitbucket.org/taubyte/p2p => ../p2p
 	bitbucket.org/taubyte/patrick => ../patrick
@@ -28,6 +32,7 @@ replace (
 	bitbucket.org/taubyte/tns => ../tns
 	bitbucket.org/taubyte/tns-p2p-client => ../tns-p2p-client
 	bitbucket.org/taubyte/vm-test-examples => ../vm-test-examples
+	github.com/ipfs/go-block-format => github.com/ipfs/go-block-format v0.1.1
 	github.com/taubyte/go-interfaces => ../go-interfaces
 	github.com/taubyte/go-sdk => ../go-sdk
 	github.com/taubyte/go-sdk-symbols => ../go-sdk-symbols
