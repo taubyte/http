@@ -6,6 +6,7 @@ replace (
 	bitbucket.org/taubyte/auth => ../auth
 	bitbucket.org/taubyte/billing => ../billing
 	bitbucket.org/taubyte/config-compiler => ../config-compiler
+	bitbucket.org/taubyte/console => ../console
 	bitbucket.org/taubyte/dreamland => ../dreamland
 	bitbucket.org/taubyte/dreamland-cli => ../dreamland-cli
 	bitbucket.org/taubyte/dreamland-test => ../dreamland-test
@@ -27,6 +28,7 @@ replace (
 	bitbucket.org/taubyte/node => ../node
 	bitbucket.org/taubyte/p2p => ../p2p
 	bitbucket.org/taubyte/patrick => ../patrick
+	bitbucket.org/taubyte/q-node => ../q-node
 	bitbucket.org/taubyte/seer => ../seer
 	bitbucket.org/taubyte/seer-p2p-client => ../seer-p2p-client
 	bitbucket.org/taubyte/spore-drive => ../spore-drive
@@ -45,13 +47,6 @@ replace (
 	github.com/taubyte/vm-wasm-utils => ../vm-wasm-utils
 )
 
-// Taubyte Direct Imports
-require (
-	github.com/taubyte/go-interfaces v0.1.3
-	github.com/taubyte/utils v0.1.5
-)
-
-// Direct Imports
 require (
 	github.com/CAFxX/httpcompression v0.0.8
 	github.com/gorilla/mux v1.8.0
@@ -59,17 +54,16 @@ require (
 	github.com/ipfs/go-log/v2 v2.5.1
 	github.com/rs/cors v1.8.2
 	github.com/spf13/afero v1.9.5
+	github.com/taubyte/go-interfaces v0.1.3
+	github.com/taubyte/utils v0.1.5
 	github.com/unrolled/secure v1.0.9
-
 )
 
-// Indirect Imports
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/klauspost/compress v1.16.4 // indirect
 	github.com/mattn/go-isatty v0.0.18 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
-	go.uber.org/goleak v1.1.12 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
 	golang.org/x/sys v0.7.0 // indirect
