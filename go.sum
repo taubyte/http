@@ -164,6 +164,10 @@ github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81P
 github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.8.0 h1:pSgiaMZlXftHpm5L7V1+rVB+AZJydKsMxsQBIJw4PKk=
+github.com/taubyte/go-interfaces v0.2.0-pre h1:xHCrbHnH1eXISzBaKffIsczALopBdpP36ENSzbSUz70=
+github.com/taubyte/go-interfaces v0.2.0-pre/go.mod h1:9GDCq2MMFEZ6rDv/gqZbFLjDz//lgE0CBllumUBc19A=
+github.com/taubyte/utils v0.1.6-pre.v2 h1:JqHzR3OcBgAuEq7oAcXMRWPHe4/+3baMO7T+lFP2bt4=
+github.com/taubyte/utils v0.1.6-pre.v2/go.mod h1:jyDYcHBgGb5bcPTzAMVFurLSHesImMMxvFbAT4eCnG0=
 github.com/unrolled/secure v1.0.9 h1:BWRuEb1vDrBFFDdbCnKkof3gZ35I/bnHGyt0LB0TNyQ=
 github.com/unrolled/secure v1.0.9/go.mod h1:fO+mEan+FLB0CdEnHf6Q4ZZVNqG+5fuLFnP8p0BXDPI=
 github.com/urfave/negroni v1.0.0 h1:kIimOitoypq34K7TG7DUaJ9kq/N4Ofuwi1sjz0KipXc=
