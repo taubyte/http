@@ -6,10 +6,10 @@ import (
 	"log"
 	"os"
 
-	http "github.com/taubyte/http"
+	"github.com/spf13/afero/zipfs"
+	http "github.com/taubyte/go-interfaces/services/http"
 	basicHttp "github.com/taubyte/http/basic"
 	"github.com/taubyte/http/options"
-	"github.com/spf13/afero/zipfs"
 
 	_ "embed"
 )

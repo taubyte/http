@@ -6,28 +6,28 @@ import (
 	"io"
 	"net/http"
 
-	service "github.com/taubyte/http"
 	"github.com/gorilla/mux"
+	service "github.com/taubyte/go-interfaces/services/http"
 )
 
 func (c *Context) returnData(code int, interfaceData interface{}) error {
-	if c.rawResponse == true {
+	if c.rawResponse {
 		var err error
 
 		switch data := interfaceData.(type) {
 		case []byte:
-			c.ctx.ResponseWriter.WriteHeader(code)
-			_, err = c.ctx.ResponseWriter.Write(data)
+			c.req.ResponseWriter.WriteHeader(code)
+			_, err = c.req.ResponseWriter.Write(data)
 		case string:
-			c.ctx.ResponseWriter.WriteHeader(code)
-			_, err = c.ctx.ResponseWriter.Write([]byte(data))
+			c.req.ResponseWriter.WriteHeader(code)
+			_, err = c.req.ResponseWriter.Write([]byte(data))
 		case service.RawData:
-			c.ctx.ResponseWriter.Header().Set("Content-Type", data.ContentType)
-			c.ctx.ResponseWriter.WriteHeader(code)
-			_, err = c.ctx.ResponseWriter.Write(data.Data)
+			c.req.ResponseWriter.Header().Set("Content-Type", data.ContentType)
+			c.req.ResponseWriter.WriteHeader(code)
+			_, err = c.req.ResponseWriter.Write(data.Data)
 		case service.RawStream:
-			c.ctx.ResponseWriter.Header().Set("Content-Type", data.ContentType)
-			c.ctx.ResponseWriter.WriteHeader(code)
+			c.req.ResponseWriter.Header().Set("Content-Type", data.ContentType)
+			c.req.ResponseWriter.WriteHeader(code)
 			rbuf := make([]byte, 1024)
 			for {
 				var n int
@@ -39,7 +39,7 @@ func (c *Context) returnData(code int, interfaceData interface{}) error {
 					break
 				}
 
-				_, err = c.ctx.ResponseWriter.Write(rbuf[:n])
+				_, err = c.req.ResponseWriter.Write(rbuf[:n])
 				if err != nil {
 					break
 				}
@@ -56,7 +56,7 @@ func (c *Context) returnData(code int, interfaceData interface{}) error {
 			c.returnError(http.StatusInternalServerError, err)
 			return err
 		}
-		_, err = c.ctx.ResponseWriter.Write([]byte(m))
+		_, err = c.req.ResponseWriter.Write([]byte(m))
 		if err != nil {
 			return err
 		}
@@ -74,8 +74,8 @@ func (c *Context) returnError(code int, err error) {
 	)
 
 	// TODO log error here
-	c.ctx.ResponseWriter.Write([]byte(m))
-	c.ctx.ResponseWriter.WriteHeader(code)
+	c.req.ResponseWriter.Write([]byte(m))
+	c.req.ResponseWriter.WriteHeader(code)
 }
 
 func (c *Context) formatBody(m interface{}) (string, error) {
@@ -105,10 +105,10 @@ func (ctx *Context) extractVariables(required []string, optional []string) (map[
 
 	xVars := make(map[string]interface{})
 	add := func(k string) bool {
-		if q := request.URL.Query(); q != nil && q.Has(k) == true {
+		if q := request.URL.Query(); q != nil && q.Has(k) {
 			xVars[k] = q.Get(k)
 			return true
-		} else if v, ok := vars[k]; ok == true {
+		} else if v, ok := vars[k]; ok {
 			xVars[k] = v
 			return true
 		} else if v := request.Header.Get(k); v != "" {
@@ -127,8 +127,8 @@ func (ctx *Context) extractVariables(required []string, optional []string) (map[
 	}
 
 	for _, k := range required {
-		if add(k) == false {
-			return nil, fmt.Errorf("Processing `%s`, key `%s` not found!", request.URL, k)
+		if !add(k) {
+			return nil, fmt.Errorf("processing `%s`, key `%s` not found", request.URL, k)
 		}
 	}
 

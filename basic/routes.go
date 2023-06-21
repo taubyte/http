@@ -3,10 +3,10 @@ package basic
 import (
 	"net/http"
 
-	service "github.com/taubyte/http"
+	"github.com/gorilla/mux"
+	service "github.com/taubyte/go-interfaces/services/http"
 	"github.com/taubyte/http/context"
 	"github.com/taubyte/http/request"
-	"github.com/gorilla/mux"
 )
 
 func (s *Service) GET(def *service.RouteDefinition) {
@@ -44,9 +44,10 @@ func (s *Service) Raw(def *service.RawRouteDefinition) *mux.Route {
 	route.HandlerFunc(func(w http.ResponseWriter, h *http.Request) {
 		logger.Debugf("[RAW] %s", h.RequestURI)
 		options := make([]context.Option, 0)
-		if def.RawResponse == true {
+		if def.RawResponse {
 			options = append(options, context.RawResponse())
 		}
+
 		s.handleRequest(&request.Request{ResponseWriter: w, HttpRequest: h}, &def.Vars, def.Scope, def.Auth.Validator, def.Handler, def.Auth.GC, options...)
 	})
 

@@ -10,7 +10,7 @@ func AllowedMethods(methods []string) Option {
 
 func AllowedOrigins(regex bool, origins []string) Option {
 	return func(s Configurable) error {
-		if regex == false {
+		if !regex {
 			return s.SetOption(OptionAllowedOrigins{
 				Func: func(origin string) bool {
 					for _, o := range origins {
@@ -18,6 +18,7 @@ func AllowedOrigins(regex bool, origins []string) Option {
 							return true
 						}
 					}
+
 					return false
 				},
 			})
@@ -30,10 +31,11 @@ func AllowedOrigins(regex bool, origins []string) Option {
 				Func: func(origin string) bool {
 					_origin := []byte(origin)
 					for _, o := range _origins {
-						if o.Match(_origin) == true {
+						if o.Match(_origin) {
 							return true
 						}
 					}
+
 					return false
 				},
 			})

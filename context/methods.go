@@ -3,7 +3,7 @@ package context
 import (
 	"net/http"
 
-	service "github.com/taubyte/http"
+	service "github.com/taubyte/go-interfaces/services/http"
 )
 
 func (c *Context) RawResponse() bool {
@@ -19,11 +19,11 @@ func (c *Context) Body() []byte {
 }
 
 func (c *Context) Request() *http.Request {
-	return c.ctx.HttpRequest
+	return c.req.HttpRequest
 }
 
 func (c *Context) Writer() http.ResponseWriter {
-	return c.ctx.ResponseWriter
+	return c.req.ResponseWriter
 }
 
 func (c *Context) HandleWith(handler service.Handler) error {
@@ -37,14 +37,14 @@ func (c *Context) HandleWith(handler service.Handler) error {
 		return err
 	}
 
-	request := c.ctx.HttpRequest
+	request := c.req.HttpRequest
 
 	switch redirect := ret.(type) {
 	case service.TemporaryRedirect:
-		http.Redirect(c.ctx.ResponseWriter, request, string(redirect), http.StatusTemporaryRedirect)
+		http.Redirect(c.req.ResponseWriter, request, string(redirect), http.StatusTemporaryRedirect)
 		return nil
 	case service.PermanentRedirect:
-		http.Redirect(c.ctx.ResponseWriter, request, string(redirect), http.StatusPermanentRedirect)
+		http.Redirect(c.req.ResponseWriter, request, string(redirect), http.StatusPermanentRedirect)
 		return nil
 	}
 

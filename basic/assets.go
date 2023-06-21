@@ -4,66 +4,64 @@ import (
 	"net/http"
 	"path"
 
-	service "github.com/taubyte/http"
+	"github.com/spf13/afero"
+	service "github.com/taubyte/go-interfaces/services/http"
 	auth "github.com/taubyte/http/auth"
 	"github.com/taubyte/http/context"
 	"github.com/taubyte/http/request"
-	"github.com/spf13/afero"
 )
 
-func (s *Service) ServeAssets(def *service.AssetsDefinition) {
-	var fs afero.Fs
-	if def.Directory != "" {
-		fs = afero.NewBasePathFs(def.FileSystem, def.Directory)
-	} else {
-		fs = def.FileSystem
+func fileSystem(def *service.HeadlessAssetsDefinition) afero.Fs {
+	if len(def.Directory) > 0 {
+		return afero.NewBasePathFs(def.FileSystem, def.Directory)
 	}
 
+	return def.FileSystem
+}
+
+func setSPAPath(req *http.Request) {
+	req.URL.Path = "/"
+}
+
+func (s *Service) ServeAssets(def *service.AssetsDefinition) {
+	fs := fileSystem(&def.HeadlessAssetsDefinition)
 	fileServer := http.FileServer(afero.NewHttpFs(fs))
 
 	route := s.Router.PathPrefix(def.Path).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		logger.Debugf("[Asset] %s", r.RequestURI)
 
-		_ctx, err := context.New(&request.Request{ResponseWriter: w, HttpRequest: r}, &def.Vars, context.RawResponse())
+		ctx, err := context.New(&request.Request{ResponseWriter: w, HttpRequest: r}, &def.Vars, context.RawResponse())
 		if err != nil {
-			// New Context will return error to Client
 			logger.Error(err)
 			return
 		}
-		err = _ctx.HandleAuth(auth.Scope(def.Scope, def.Auth.Validator))
-		if err != nil {
-			// enforceScope will return error to Client
+		if err = ctx.HandleAuth(auth.Scope(def.Scope, def.Auth.Validator)); err != nil {
 			logger.Error(err)
 			return
 		}
 
 		defer func() {
-			cleanupErr := _ctx.HandleCleanup(def.Auth.GC)
-			if err != nil {
-				logger.Errorf("cleanup failed with: %s", cleanupErr)
+			if err := ctx.HandleCleanup(def.Auth.GC); err != nil {
+				logger.Errorf("cleanup failed with: %s", err)
 			}
 		}()
 
 		// check whether afile exists at the given path
 		sts, err := fs.Stat(r.URL.Path)
 		if err != nil {
-			if def.SinglePageApplication == true {
-				// file does not exist, serve index.html
-				r.URL.Path = "/"
-			} else {
+			if !def.SinglePageApplication {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
+			// file does not exist, serve index.html
+			setSPAPath(r)
 		} else {
-			if sts.IsDir() == true {
-				if def.SinglePageApplication == true {
-					// file does not exist, serve index.html
-					r.URL.Path = "/"
-				} else {
-					w.WriteHeader(http.StatusForbidden)
-					return
-				}
+			if !sts.IsDir() {
+				w.WriteHeader(http.StatusForbidden)
+				return
 			}
+
+			setSPAPath(r)
 		}
 
 		if def.BeforeServe != nil {
@@ -80,34 +78,27 @@ func (s *Service) ServeAssets(def *service.AssetsDefinition) {
 }
 
 func (s *Service) LowLevelAssetHandler(def *service.HeadlessAssetsDefinition, w http.ResponseWriter, r *http.Request) error {
-	var fs afero.Fs
-	if len(def.Directory) != 0 {
-		fs = afero.NewBasePathFs(def.FileSystem, def.Directory)
-	} else {
-		fs = def.FileSystem
-	}
-
+	fs := fileSystem(def)
 	fileServer := http.FileServer(afero.NewHttpFs(fs))
 
 	w.Header().Del("Content-Type")
 
 	sts, err := fs.Stat(r.URL.Path)
 	if err != nil {
-		if def.SinglePageApplication == true {
-			r.URL.Path = "/"
-		} else {
+		if !def.SinglePageApplication {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return nil
 		}
+
+		setSPAPath(r)
 	} else {
-		_, err := fs.Stat(path.Join(r.URL.Path, "index.html"))
-		if sts.IsDir() == true && err != nil {
-			if def.SinglePageApplication == true {
-				r.URL.Path = "/"
-			} else {
+		if _, err := fs.Stat(path.Join(r.URL.Path, "index.html")); sts.IsDir() && err != nil {
+			if !def.SinglePageApplication {
 				w.WriteHeader(http.StatusForbidden)
 				return nil
 			}
+
+			setSPAPath(r)
 		}
 	}
 
@@ -120,12 +111,7 @@ func (s *Service) LowLevelAssetHandler(def *service.HeadlessAssetsDefinition, w 
 }
 
 func (s *Service) AssetHandler(def *service.HeadlessAssetsDefinition, ctx service.Context) (interface{}, error) {
-	var fs afero.Fs
-	if len(def.Directory) != 0 {
-		fs = afero.NewBasePathFs(def.FileSystem, def.Directory)
-	} else {
-		fs = def.FileSystem
-	}
+	fs := fileSystem(def)
 
 	fileServer := http.FileServer(afero.NewHttpFs(fs))
 
@@ -137,20 +123,19 @@ func (s *Service) AssetHandler(def *service.HeadlessAssetsDefinition, ctx servic
 
 	sts, err := fs.Stat(r.URL.Path)
 	if err != nil {
-		if def.SinglePageApplication == true {
-			r.URL.Path = "/"
-		} else {
+		if !def.SinglePageApplication {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return nil, nil
 		}
+
+		r.URL.Path = "/"
 	} else {
-		if sts.IsDir() == true {
-			if def.SinglePageApplication == true {
-				r.URL.Path = "/"
-			} else {
+		if sts.IsDir() {
+			if !def.SinglePageApplication {
 				w.WriteHeader(http.StatusForbidden)
 				return nil, nil
 			}
+			r.URL.Path = "/"
 		}
 	}
 
