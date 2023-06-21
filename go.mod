@@ -9,7 +9,7 @@ require (
 	github.com/ipfs/go-log/v2 v2.5.1
 	github.com/rs/cors v1.8.2
 	github.com/spf13/afero v1.9.5
-	github.com/taubyte/go-interfaces v0.2.0-pre
+	github.com/taubyte/go-interfaces v0.2.0-pre.v2
 	github.com/taubyte/utils v0.1.6-pre.v2
 	github.com/unrolled/secure v1.0.9
 )
