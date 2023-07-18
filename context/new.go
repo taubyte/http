@@ -3,7 +3,7 @@ package context
 import (
 	"net/http"
 
-	service "github.com/taubyte/go-interfaces/services/http"
+	service "github.com/taubyte/http"
 	"github.com/taubyte/http/request"
 )
 

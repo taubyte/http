@@ -3,14 +3,13 @@ package basic
 import (
 	"net/http"
 
-	iface "github.com/taubyte/go-interfaces/services/http"
 	service "github.com/taubyte/http"
 	auth "github.com/taubyte/http/auth"
 	"github.com/taubyte/http/context"
 	"github.com/taubyte/http/request"
 )
 
-func (s *Service) WebSocket(def *iface.WebSocketDefinition) {
+func (s *Service) WebSocket(def *service.WebSocketDefinition) {
 	route := s.Router.HandleFunc(def.Path, func(w http.ResponseWriter, r *http.Request) {
 		logger.Debugf("[WS] %s", r.RequestURI)
 

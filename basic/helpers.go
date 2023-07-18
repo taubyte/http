@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	service "github.com/taubyte/go-interfaces/services/http"
+	service "github.com/taubyte/http"
 	auth "github.com/taubyte/http/auth"
 	"github.com/taubyte/http/context"
 	"github.com/taubyte/http/request"

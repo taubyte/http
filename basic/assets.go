@@ -5,7 +5,7 @@ import (
 	"path"
 
 	"github.com/spf13/afero"
-	service "github.com/taubyte/go-interfaces/services/http"
+	service "github.com/taubyte/http"
 	auth "github.com/taubyte/http/auth"
 	"github.com/taubyte/http/context"
 	"github.com/taubyte/http/request"
@@ -47,7 +47,7 @@ func (s *Service) ServeAssets(def *service.AssetsDefinition) {
 		// check whether afile exists at the given path
 		sts, err := fs.Stat(r.URL.Path)
 		if err != nil {
-			if def.SinglePageApplication == true {
+			if def.SinglePageApplication {
 				// file does not exist, serve index.html
 				r.URL.Path = "/"
 			} else {
@@ -55,8 +55,8 @@ func (s *Service) ServeAssets(def *service.AssetsDefinition) {
 				return
 			}
 		} else {
-			if sts.IsDir() == true {
-				if def.SinglePageApplication == true {
+			if sts.IsDir() {
+				if def.SinglePageApplication {
 					// file does not exist, serve index.html
 					r.URL.Path = "/"
 				} else {
@@ -93,7 +93,7 @@ func (s *Service) LowLevelAssetHandler(def *service.HeadlessAssetsDefinition, w 
 
 	sts, err := fs.Stat(r.URL.Path)
 	if err != nil {
-		if def.SinglePageApplication == true {
+		if def.SinglePageApplication {
 			r.URL.Path = "/"
 		} else {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -101,8 +101,8 @@ func (s *Service) LowLevelAssetHandler(def *service.HeadlessAssetsDefinition, w 
 		}
 	} else {
 		_, err := fs.Stat(path.Join(r.URL.Path, "index.html"))
-		if sts.IsDir() == true && err != nil {
-			if def.SinglePageApplication == true {
+		if sts.IsDir() && err != nil {
+			if def.SinglePageApplication {
 				r.URL.Path = "/"
 			} else {
 				w.WriteHeader(http.StatusForbidden)
@@ -137,15 +137,15 @@ func (s *Service) AssetHandler(def *service.HeadlessAssetsDefinition, ctx servic
 
 	sts, err := fs.Stat(r.URL.Path)
 	if err != nil {
-		if def.SinglePageApplication == true {
+		if def.SinglePageApplication {
 			r.URL.Path = "/"
 		} else {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return nil, nil
 		}
 	} else {
-		if sts.IsDir() == true {
-			if def.SinglePageApplication == true {
+		if sts.IsDir() {
+			if def.SinglePageApplication {
 				r.URL.Path = "/"
 			} else {
 				w.WriteHeader(http.StatusForbidden)

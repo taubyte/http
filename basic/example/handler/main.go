@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/spf13/afero/zipfs"
-	http "github.com/taubyte/go-interfaces/services/http"
+	http "github.com/taubyte/http"
 	basicHttp "github.com/taubyte/http/basic"
 	"github.com/taubyte/http/options"
 
