@@ -3,7 +3,7 @@ package auth
 import (
 	"bytes"
 
-	service "github.com/taubyte/go-interfaces/services/http"
+	service "github.com/taubyte/http"
 )
 
 func AnonymousHandler(ctx service.Context) (interface{}, error) {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	http "github.com/taubyte/go-interfaces/services/http"
+	http "github.com/taubyte/http"
 	auth "github.com/taubyte/http/auth"
 	basicHttp "github.com/taubyte/http/basic"
 	"github.com/taubyte/http/options"
