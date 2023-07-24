@@ -96,6 +96,7 @@ type Context interface {
 	HandleCleanup(Handler) error
 	Request() *http.Request
 	Writer() http.ResponseWriter
+	ParseBody(obj interface{}) error
 
 	RawResponse() bool
 	SetRawResponse(val bool)
