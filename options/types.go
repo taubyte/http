@@ -26,3 +26,7 @@ type OptionLoadCertificate struct {
 type OptionTryLoadCertificate OptionLoadCertificate
 
 type OptionSelfSignedCertificate struct{}
+
+type OptionDebug struct {
+	Debug bool
+}
