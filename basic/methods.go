@@ -23,6 +23,8 @@ func (s *Service) SetOption(optIface interface{}) error {
 		s.AllowedMethods = opt.Methods
 	case options.OptionAllowedOrigins:
 		s.AllowedOriginsFunc = opt.Func
+	case options.OptionDebug:
+		s.Debug = true
 	}
 
 	// default: we ignore option we do not know so other modules can process them

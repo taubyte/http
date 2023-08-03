@@ -11,11 +11,13 @@ require (
 	github.com/spf13/afero v1.9.5
 	github.com/taubyte/utils v0.1.6-pre.v2
 	github.com/unrolled/secure v1.0.9
+	gotest.tools/v3 v3.4.0
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/benbjohnson/clock v1.3.0 // indirect
+	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/klauspost/compress v1.16.4 // indirect
 	github.com/mattn/go-isatty v0.0.18 // indirect
 	go.uber.org/atomic v1.10.0 // indirect

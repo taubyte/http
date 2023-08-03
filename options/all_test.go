@@ -3,6 +3,8 @@ package options
 import (
 	"reflect"
 	"testing"
+
+	"gotest.tools/v3/assert"
 )
 
 type MockConfigurable struct {
@@ -22,10 +24,7 @@ func TestListen(t *testing.T) {
 	mc := newMockConfigurable()
 	listen_addr := "0.0.0.0:8800"
 	err := Parse(mc, []Option{Listen(listen_addr)})
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	for _, o := range mc.values {
 		if _o, ok := o.(OptionListen); ok == true || _o.On == listen_addr {
@@ -39,10 +38,7 @@ func TestAllowedMethods(t *testing.T) {
 	mc := newMockConfigurable()
 	allowed := []string{"GET", "POST"}
 	err := Parse(mc, []Option{AllowedMethods(allowed)})
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	for _, o := range mc.values {
 		if _o, ok := o.(OptionAllowedMethods); ok == true && reflect.DeepEqual(_o.Methods, allowed) {
@@ -56,10 +52,7 @@ func TestAllowedOrigins(t *testing.T) {
 	mc := newMockConfigurable()
 	allowed := []string{"GET", "POST"}
 	err := Parse(mc, []Option{AllowedOrigins(false, allowed)})
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	for _, o := range mc.values {
 		if _, ok := o.(OptionAllowedOrigins); ok == true {
@@ -72,10 +65,7 @@ func TestAllowedOrigins(t *testing.T) {
 func TestSelfSignedCertificate(t *testing.T) {
 	mc := newMockConfigurable()
 	err := Parse(mc, []Option{SelfSignedCertificate()})
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	for _, o := range mc.values {
 		if _, ok := o.(OptionSelfSignedCertificate); ok == true {
@@ -90,10 +80,7 @@ func TestLoadCertificate(t *testing.T) {
 	cert := "fakeCert"
 	key := "fakeKey"
 	err := Parse(mc, []Option{LoadCertificate(cert, key)})
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	for _, o := range mc.values {
 		if _o, ok := o.(OptionLoadCertificate); ok == true && _o.CertificateFilename == cert && _o.KeyFilename == key {
@@ -108,10 +95,7 @@ func TestTryLoadCertificate(t *testing.T) {
 	cert := "fakeCert"
 	key := "fakeKey"
 	err := Parse(mc, []Option{TryLoadCertificate(cert, key)})
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	assert.NilError(t, err)
 
 	for _, o := range mc.values {
 		if _o, ok := o.(OptionTryLoadCertificate); ok == true && _o.CertificateFilename == cert && _o.KeyFilename == key {
@@ -119,4 +103,18 @@ func TestTryLoadCertificate(t *testing.T) {
 		}
 	}
 	t.Errorf("Option OptionTryLoadCertificate not set correctly")
+}
+
+func TestDebug(t *testing.T) {
+	mc := newMockConfigurable()
+	err := Parse(mc, []Option{Debug()})
+	assert.NilError(t, err)
+
+	for _, o := range mc.values {
+		if _o, ok := o.(OptionDebug); ok && _o.Debug {
+			return
+		}
+	}
+	t.Error("Option OptionDebug not set correctly ")
+
 }

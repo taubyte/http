@@ -17,6 +17,7 @@ type Service struct {
 	Server             *http.Server
 	SecLayer           *secure.Secure
 	Cors               *cors.Cors
+	Debug              bool
 	err                error
 	ctx                context.Context
 	ctx_cancel         context.CancelFunc

@@ -4,16 +4,15 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/taubyte/http/options"
 	"github.com/CAFxX/httpcompression"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+	"github.com/taubyte/http/options"
 	"github.com/unrolled/secure"
 )
 
 func New(ctx context.Context, opts ...options.Option) (*Service, error) {
 	var s Service
-
 	s.ctx, s.ctx_cancel = context.WithCancel(ctx)
 
 	err := options.Parse(&s, opts)
@@ -39,8 +38,7 @@ func New(ctx context.Context, opts ...options.Option) (*Service, error) {
 		AllowedMethods:     DefaultAllowedMethods,
 		OptionsPassthrough: false,
 		AllowedOrigins:     []string{"*"},
-		// Enable Debugging for testing, consider disabling in production
-		Debug: true,
+		Debug:              s.Debug,
 	}
 
 	if s.AllowedMethods != nil {
