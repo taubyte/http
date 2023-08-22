@@ -39,7 +39,7 @@ func (c *Context) returnData(code int, interfaceData interface{}) error {
 					}
 				}
 				if err != nil {
-					if !errors.Is(err, io.EOF) {
+					if errors.Is(err, io.EOF) {
 						err = nil
 					}
 					break
