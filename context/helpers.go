@@ -30,23 +30,18 @@ func (c *Context) returnData(code int, interfaceData interface{}) error {
 			c.req.ResponseWriter.Header().Set("Content-Type", data.ContentType)
 			c.req.ResponseWriter.WriteHeader(code)
 			rbuf := make([]byte, 1024)
-			n, EOF := 0, false
+			n := 0
 			for {
 				n, err = data.Stream.Read(rbuf)
-				if err != nil {
-					if !errors.Is(err, io.EOF) {
-						break
-					}
-					EOF = true
-				}
-
 				if n > 0 {
 					if _, err = c.req.ResponseWriter.Write(rbuf[:n]); err != nil {
 						break
 					}
 				}
-
-				if EOF {
+				if err != nil {
+					if !errors.Is(err, io.EOF) {
+						err = nil
+					}
 					break
 				}
 			}
