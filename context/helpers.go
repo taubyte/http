@@ -2,6 +2,7 @@ package context
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -29,25 +30,25 @@ func (c *Context) returnData(code int, interfaceData interface{}) error {
 			c.req.ResponseWriter.Header().Set("Content-Type", data.ContentType)
 			c.req.ResponseWriter.WriteHeader(code)
 			rbuf := make([]byte, 1024)
+			n := 0
 			for {
-				var n int
 				n, err = data.Stream.Read(rbuf)
-				if n == 0 || err != nil {
-					if err == io.EOF {
+				if n > 0 {
+					if _, err = c.req.ResponseWriter.Write(rbuf[:n]); err != nil {
+						break
+					}
+				}
+				if err != nil {
+					if errors.Is(err, io.EOF) {
 						err = nil
 					}
-					break
-				}
-
-				_, err = c.req.ResponseWriter.Write(rbuf[:n])
-				if err != nil {
 					break
 				}
 			}
 			data.Stream.Close()
 		}
 		if err != nil {
-			return fmt.Errorf("writing raw response failed with: %s", err)
+			return fmt.Errorf("writing raw response failed with: %w", err)
 		}
 	} else {
 		var m string
