@@ -19,14 +19,3 @@ go get github.com/taubyte/http
 
 # License
 Please see the LICENSE file for details.
-
-
-# Help
-Find us on our [Discord](https://discord.gg/taubyte)
-
-
-# Maintainers
- - Samy Fodil @samyfodil
- - Sam Stoltenberg @skelouse
- - Tafseer Khan @tafseer-khan
- - Aron Jalbuena @arontaubyte
